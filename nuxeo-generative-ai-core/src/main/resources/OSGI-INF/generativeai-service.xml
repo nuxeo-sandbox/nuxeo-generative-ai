@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<component name="org.nuxeo.generative.ai.GenerativeAI">
+
+  <implementation class="org.nuxeo.generative.ai.GenerativeAIImpl" />
+
+  <service>
+    <provide interface="org.nuxeo.generative.ai.GenerativeAI" />
+  </service>
+</component>
