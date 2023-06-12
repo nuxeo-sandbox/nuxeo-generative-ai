@@ -6,4 +6,38 @@
   <service>
     <provide interface="org.nuxeo.generative.ai.GenerativeAI" />
   </service>
+  
+  <extension-point name="configuration">
+    <documentation>Default behavior of the service</documentation>
+    <object class="org.nuxeo.generative.ai.GenerativeAIDescriptor" />
+  </extension-point>
+  
+  <extension-point name="provider">
+    <documentation>Used to define a new Generative AI service provider</documentation>
+    <object class="org.nuxeo.generative.ai.GenerativeAIProviderDescriptor" />
+  </extension-point>
+  
+  <!--  The plugin provides OpenAI provider implementation by default,
+        but this can be changed with the nuxeo.generative.ai.default.provider parameter
+        If empty or not passed, we use "openai" -->
+  <extension target="org.nuxeo.generative.ai.GenerativeAI" point="configuration">
+    <configuration>
+      <enabled>true</enabled>
+      <defaultProviderName>${nuxeo.generative.ai.default.provider:=}</defaultProviderName>
+    </configuration>
+  </extension>
+  
+  <!--  Registration of the OpenAI provider
+        WARNING: Configuration parameters must match the ones defined in
+                 org.nuxeo.generative.ai.openai.OpenAIProvider  -->
+  <extension target="org.nuxeo.generative.ai.GenerativeAI" point="provider" >
+    <provider class="org.nuxeo.generative.ai.openai.OpenAIProvider">
+      <name>openai</name>
+      <parameters>
+        <parameter name="organization">${generative.ai.openai.organization:=}</parameter>
+        <parameter name="apikey">${generative.ai.openai.apikey:=}</parameter>
+      </parameters>
+    </provider>
+  </extension>
+  
 </component>

@@ -23,4 +23,11 @@ public class TestGenerativeAI {
     public void testService() {
         assertNotNull(generativeai);
     }
+    
+    @Test
+    public void shouldHaveADefaultProvider() {
+        GenerativeAIProvider defaultProvider = generativeai.getProvider(null);
+        
+        assertNotNull(defaultProvider);
+    }
 }

@@ -18,18 +18,24 @@
  */
 package org.nuxeo.generative.ai;
 
-import org.nuxeo.ecm.core.api.Blob;
+import org.apache.commons.lang3.StringUtils;
+import org.nuxeo.common.xmap.annotation.XNode;
+import org.nuxeo.common.xmap.annotation.XObject;
 
-public interface GenerativeAI {
+/**
+ * 
+ * @since 2021.37
+ */
+@XObject("configuration")
+public class GenerativeAIDescriptor {
 
-    public static final String DEFAULT_PROVIDER_NAME = "openai";
-    
-    // Returns the default provider is name is empty or null
-    public GenerativeAIProvider getProvider(String name);
-    
-    // If provider is null or empty => use the default provider
-    public Blob generateImage(String provider, String prompt);
-    
- // If provider is null or empty => use the default provider
-    public String generateText(String provider, String prompt);
+    @XNode("defaultProviderName")
+    protected String defaultProviderName = GenerativeAI.DEFAULT_PROVIDER_NAME;
+
+    public String getDefaultProviderName() {
+        if (StringUtils.isBlank(defaultProviderName)) {
+            defaultProviderName = GenerativeAI.DEFAULT_PROVIDER_NAME;
+        }
+        return defaultProviderName;
+    }
 }
