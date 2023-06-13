@@ -18,6 +18,7 @@
  */
 package org.nuxeo.generative.ai;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
@@ -95,10 +96,9 @@ public class GenerativeAIImpl extends DefaultComponent implements GenerativeAI {
                 GenerativeAIProviderDescriptor providerDesc = (GenerativeAIProviderDescriptor) contrib;
                 try {
                     GenerativeAIProvider provider = (GenerativeAIProvider) providerDesc.getKlass()
-                                                                                       .getConstructor(String.class, Map.class)
-                                                                                       .newInstance(
-                                                                                               providerDesc.getName(),
-                                                                                               providerDesc.getParameters());
+                                                                                       .getConstructor(
+                                                                                               GenerativeAIProviderDescriptor.class)
+                                                                                       .newInstance(providerDesc);
                     providers.put(providerDesc.name, provider);
                 } catch (ReflectiveOperationException e) {
                     throw new NuxeoException(e);
@@ -138,29 +138,35 @@ public class GenerativeAIImpl extends DefaultComponent implements GenerativeAI {
     public void stop(ComponentContext context) throws InterruptedException {
         // do nothing by default. You can remove this method if not used.
     }
-    
+
     @Override
     public GenerativeAIProvider getProvider(String name) {
-        if(StringUtils.isBlank(name)) {
+        if (StringUtils.isBlank(name)) {
             name = GenerativeAI.DEFAULT_PROVIDER_NAME;
         }
         return providers.get(name);
     }
 
     @Override
-    public Blob generateImage(String provider, String prompt) {
+    public Blob generateImage(String provider, String prompt, String size) throws IOException {
         GenerativeAIProvider aiProvider = getProviderOrDefault(provider);
-        
-        return aiProvider.generateImage(prompt);
+
+        return aiProvider.generateImage(prompt, size);
     }
 
     @Override
-    public String generateText(String provider, String prompt) {
+    public Blob generateImages(String provider, String prompt, int howMany, String size) throws IOException {
         GenerativeAIProvider aiProvider = getProviderOrDefault(provider);
-        
+
+        return aiProvider.generateImages(prompt, howMany, size);
+    }
+
+    @Override
+    public String generateText(String provider, String prompt) throws IOException {
+        GenerativeAIProvider aiProvider = getProviderOrDefault(provider);
+
         return aiProvider.generateText(prompt);
     }
-    
 
     /*
      * Utility to handle a null/empty provider name

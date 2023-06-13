@@ -1,17 +1,25 @@
 package org.nuxeo.generative.ai.openai;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.nuxeo.ecm.core.api.Blob;
-import org.nuxeo.generative.ai.GenerativeAIDescriptor;
+import org.nuxeo.ecm.core.api.NuxeoException;
 import org.nuxeo.generative.ai.GenerativeAIProvider;
+import org.nuxeo.generative.ai.GenerativeAIProviderDescriptor;
 import org.nuxeo.runtime.api.Framework;
 
+import com.theokanning.openai.OpenAiHttpException;
+import com.theokanning.openai.image.CreateImageRequest;
+import com.theokanning.openai.image.Image;
+import com.theokanning.openai.service.OpenAiService;
+
 /**
- * This is the defaiult provider. Name is defined in 
+ * This is the defaiult provider. Name is defined in
  * For authentication ot the service, we need an apikey and opetionaly an organization
  * Values are checked in this order:
  * <br>
@@ -45,19 +53,19 @@ public class OpenAIProvider implements GenerativeAIProvider {
 
     public static final String ENV_VAR_APIKEY = "NUXEO_GENERATIVE_AI_OPENAI_APIKEY";
 
-    protected Map<String, String> params;
-    
-    String contributionName;
-
     protected String organization = null;
 
     protected String apiKey = null;
 
-    public OpenAIProvider(String contributionName, Map<String, String> parameters) {
-        
-        this.contributionName = contributionName;
-        
-        params = parameters;
+    protected OpenAiService service = null;
+
+    protected GenerativeAIProviderDescriptor descriptor;
+
+    public OpenAIProvider(GenerativeAIProviderDescriptor desc) {
+
+        descriptor = desc;
+
+        Map<String, String> params = desc.getParameters();
 
         if (params != null) {
             organization = params.get("organization");
@@ -67,7 +75,7 @@ public class OpenAIProvider implements GenerativeAIProvider {
             if (StringUtils.isBlank(organization)) {
                 organization = System.getProperty(ENV_VAR_ORGANIZATION);
             }
-            
+
             apiKey = params.get("apiKey");
             if (StringUtils.isBlank(apiKey)) {
                 apiKey = Framework.getProperty(API_KEY_CONF_PARAM);
@@ -79,6 +87,8 @@ public class OpenAIProvider implements GenerativeAIProvider {
             // Organization can be empty, not apikey
             if (StringUtils.isBlank(apiKey)) {
                 log.error("Api Key for calling OpenAI is empty => all call will fail and will not be performed");
+            } else {
+                service = new OpenAiService(apiKey);
             }
         }
     }
@@ -93,7 +103,38 @@ public class OpenAIProvider implements GenerativeAIProvider {
     }
 
     @Override
-    public Blob generateImage(String prompt) {
+    public Blob generateImage(String prompt, String size) throws IOException {
+
+        Blob result = null;
+
+        if (!checkApiKey()) {
+            return null;
+        }
+
+        CreateImageRequest request = CreateImageRequest.builder().prompt(prompt).n(1).size(size).build();
+        List<Image> images = null;
+        try {
+            images = service.createImage(request).getData();
+            
+            Image image = null;
+            if (images.size() > 0) {
+                image = images.get(0);
+            }
+            if (image != null) {
+                image.getUrl();
+                result = GenerativeAIProvider.downloadFile(image.getUrl(), "", "OpenAI");
+            }
+        } catch (OpenAiHttpException e) {
+            // . . .More granular here. . .
+            throw new NuxeoException(e);
+        }
+
+        return result;
+
+    }
+
+    @Override
+    public Blob generateImages(String prompt, int howMany, String size) throws IOException {
 
         if (!checkApiKey()) {
             return null;
@@ -105,7 +146,7 @@ public class OpenAIProvider implements GenerativeAIProvider {
     }
 
     @Override
-    public String generateText(String prompt) {
+    public String generateText(String prompt) throws IOException {
 
         if (!checkApiKey()) {
             return null;
@@ -118,7 +159,7 @@ public class OpenAIProvider implements GenerativeAIProvider {
 
     @Override
     public String getName() {
-        return contributionName;
+        return descriptor.getName();
     }
 
 }

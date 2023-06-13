@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.nuxeo.generative.ai</groupId>
@@ -11,10 +12,31 @@
   <description />
 
   <dependencies>
+    <!-- OpenAI wrappers -->
+    <dependency>
+      <groupId>com.theokanning.openai-gpt3-java</groupId>
+      <artifactId>api</artifactId>
+      <version>0.12.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.theokanning.openai-gpt3-java</groupId>
+      <artifactId>service</artifactId>
+      <version>0.12.0</version>
+    </dependency>
+
+    <!-- Nuxeo dependencies -->
     <dependency>
       <groupId>org.nuxeo.runtime</groupId>
       <artifactId>nuxeo-runtime</artifactId>
+      <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>org.nuxeo.ecm.automation</groupId>
+      <artifactId>nuxeo-automation-core</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Test -->
     <dependency>
       <groupId>org.nuxeo.runtime</groupId>
       <artifactId>nuxeo-runtime-test</artifactId>
