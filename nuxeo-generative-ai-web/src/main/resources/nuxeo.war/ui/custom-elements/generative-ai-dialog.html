@@ -1,0 +1,155 @@
+<dom-module id="generative-ai-dialog">
+  <template>
+    <style include="nuxeo-styles">
+      nuxeo-dialog {
+        min-width: 50%;
+      }
+
+      @media (max-width: 1024px) {
+        nuxeo-dialog {
+          min-width: 0;
+          width: 90%;
+        }
+      }
+
+      nuxeo-dialog .buttons {
+        @apply --layout-horizontal;
+        @apply --layout-justified;
+        margin-top: 16px;
+        background-color: var(--nuxeo-dialog-buttons-bar, white);
+      }
+
+      .loader {
+        border: 16px solid #f3f3f3; /* Light grey */
+        border-top: 16px solid #3498db; /* Blue */
+        border-radius: 50%;
+        animation: spin 2s linear infinite;
+        display: inline-flex;
+        margin-left: 40%;
+        padding: 50px;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+
+    <template is="dom-if" if="[[hasFacet(document, 'Folderish')]]">
+      <paper-icon-button icon="image:add-to-photos" label="Generate image" on-tap="_toggleDialog">
+        <nuxeo-tooltip>Generate image</nuxeo-tooltip>
+      </paper-icon-button>
+    </template>
+
+    <nuxeo-dialog id="dialog" modal no-auto-focus class="dialog">
+      <h2>Generate image</h2>
+      <template is="dom-if" if="{{!disabled}}">
+        <div>
+          <nuxeo-input value={{prompt}} required="true"
+                       label="Description" type="text" name="prompt" role="widget" ~></nuxeo-input>
+
+          <nuxeo-input value={{imageType}} required="true"
+                       label="Image type" type="text" name="imageType" role="widget" ~></nuxeo-input>
+
+          <nuxeo-input value={{exclusion}}
+                       label="Exclusion" type="text" name="exclusion" role="widget" ~></nuxeo-input>
+
+        </div>
+        <div class="buttons">
+          <paper-button dialog-dismiss>Cancel</paper-button>
+          <paper-button id="btnGenerate"
+                        class="primary"
+                        on-tap="_generateImage">
+            Generate
+          </paper-button>
+        </div>
+      </template>
+      <template is="dom-if" if="{{disabled}}">
+        <div class="loader"></div>
+      </template>
+    </nuxeo-dialog>
+
+
+    <nuxeo-operation op="GenerativeAi.GenerateImage" id="genImage"></nuxeo-operation>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'generative-ai-dialog',
+      behaviors: [Nuxeo.LayoutBehavior],
+      properties: {
+        document: {
+          type: Object,
+        },
+
+        prompt: {
+          type: String,
+        },
+
+        imageType: {
+          type: String,
+          value: null
+        },
+
+        exclusion: {
+          type: String,
+          value: null
+        },
+
+        disabled: {
+          type: Boolean,
+          value: false
+        }
+
+      },
+
+      _toggleDialog: function () {
+        this.prompt = null;
+        this.imageType = null;
+        this.exclusion = null;
+        this.$.dialog.toggle();
+      },
+
+      _generateImage: function () {
+        if (!this.prompt || this.prompt.length < 3) {
+          this.fire('notify', {message: 'Insert an image description greater than 3 characters'});
+          return;
+        }
+        if (!this.imageType) {
+          this.fire('notify', {message: 'Select an image type'});
+          return;
+        }
+
+        this.disabled = true;
+        let operation = this.$.genImage;
+        operation.input = this.document.uid;
+        operation.params = {
+          prompt: this.prompt,
+          imageType: this.group,
+          exclusion: this.exclusion,
+          path: this.document.path,
+        };
+
+        operation.execute()
+                .then(function (response) {
+                  if (response.message != null) {
+                    this.fire('notify', {message: response.message});
+                    this.disabled = false;
+                  } else {
+                    this.$.dialog.toggle();
+                    this.disabled = false;
+                    this.navigateTo("document", response.uid);
+                  }
+                }.bind(this))
+                .catch(function (err) {
+                  this.fire('notify', {message: err.value});
+                  this.disabled = false;
+                }.bind(this));
+      },
+    });
+  </script>
+</dom-module>
