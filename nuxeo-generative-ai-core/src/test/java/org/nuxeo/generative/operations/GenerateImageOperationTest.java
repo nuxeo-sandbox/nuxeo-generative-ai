@@ -27,7 +27,6 @@ import org.nuxeo.ecm.automation.test.AutomationFeature;
 import org.nuxeo.ecm.core.api.Blob;
 import org.nuxeo.ecm.core.api.Blobs;
 import org.nuxeo.ecm.core.api.CoreSession;
-import org.nuxeo.ecm.core.api.impl.blob.StringBlob;
 import org.nuxeo.ecm.core.test.DefaultRepositoryInit;
 import org.nuxeo.ecm.core.test.annotations.Granularity;
 import org.nuxeo.ecm.core.test.annotations.RepositoryConfig;
@@ -43,7 +42,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
@@ -67,12 +65,12 @@ public class GenerateImageOperationTest {
     public void shouldCallTheOperation() throws OperationException, IOException {
         Blob blob = Blobs.createBlob(FileUtils.getResourceFileFromContext("files/test.png"));
         blob.setMimeType("image/png");
+        blob.setFilename("test");
         when(generativeAI.generateImage(any(String.class), any(String.class), any(String.class))).thenReturn(blob);
 
         OperationContext ctx = new OperationContext(session);
         Map<String, String> params = new HashMap<>();
         params.put("prompt", "test");
-        params.put("path", "/");
         automationService.run(ctx, GenerateImageOperation.ID, params);
     }
 }
