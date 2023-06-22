@@ -35,7 +35,7 @@
       <name>openai</name>
       <parameters>
         <parameter name="organization">${generative.ai.openai.organization:=}</parameter>
-        <parameter name="apiKey">${generative.ai.openai.apikey:=}</parameter>
+        <parameter name="apikey">${generative.ai.openai.apikey:=}</parameter>
       </parameters>
     </provider>
   </extension>
