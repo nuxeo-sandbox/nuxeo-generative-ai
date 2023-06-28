@@ -1,28 +1,28 @@
 <?xml version="1.0"?>
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>org.nuxeo.generative.ai</groupId>
-    <artifactId>nuxeo-generative-ai-parent</artifactId>
-    <version>1.0-SNAPSHOT</version>
-  </parent>
-  <artifactId>nuxeo-generative-ai-core</artifactId>
-  <name>Nuxeo generative ai core</name>
-  <description />
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.nuxeo.generative.ai</groupId>
+        <artifactId>nuxeo-generative-ai-parent</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>nuxeo-generative-ai-core</artifactId>
+    <name>Nuxeo generative ai core</name>
+    <description/>
 
-  <dependencies>
-    <!-- OpenAI wrappers -->
-    <dependency>
-      <groupId>com.theokanning.openai-gpt3-java</groupId>
-      <artifactId>api</artifactId>
-      <version>0.12.0</version>
-    </dependency>
-    <dependency>
-      <groupId>com.theokanning.openai-gpt3-java</groupId>
-      <artifactId>service</artifactId>
-      <version>0.12.0</version>
-    </dependency>
+    <dependencies>
+        <!-- OpenAI wrappers -->
+        <dependency>
+            <groupId>com.theokanning.openai-gpt3-java</groupId>
+            <artifactId>api</artifactId>
+            <version>0.12.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.theokanning.openai-gpt3-java</groupId>
+            <artifactId>service</artifactId>
+            <version>0.12.0</version>
+        </dependency>
 
         <!-- Nuxeo dependencies -->
         <dependency>
@@ -45,16 +45,21 @@
             <artifactId>nuxeo-platform-web-common</artifactId>
         </dependency>
 
-    <!-- Test -->
-    <dependency>
-      <groupId>org.nuxeo.runtime</groupId>
-      <artifactId>nuxeo-runtime-test</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.nuxeo.ecm.platform</groupId>
-      <artifactId>nuxeo-platform-test</artifactId>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
+        <!-- Test -->
+        <dependency>
+            <groupId>org.nuxeo.runtime</groupId>
+            <artifactId>nuxeo-runtime-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.nuxeo.ecm.platform</groupId>
+            <artifactId>nuxeo-platform-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.nuxeo.ecm.automation</groupId>
+            <artifactId>nuxeo-automation-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 </project>
