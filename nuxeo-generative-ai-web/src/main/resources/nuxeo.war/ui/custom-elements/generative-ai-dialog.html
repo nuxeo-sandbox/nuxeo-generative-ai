@@ -3,6 +3,7 @@
         <style include="nuxeo-styles">
             nuxeo-dialog {
                 min-width: 50%;
+                top: 100px;
             }
 
             @media (max-width: 1024px) {
@@ -19,6 +20,19 @@
                 background-color: var(--nuxeo-dialog-buttons-bar, white);
             }
 
+            .image-container {
+                display: flex;
+                justify-content: center;
+                margin-bottom: 16px;
+            }
+
+            .generated-image {
+                max-width: 100%;
+                max-height: 512px;
+                object-fit: contain;
+            }
+
+
             .loader {
                 border: 16px solid #f3f3f3; /* Light grey */
                 border-top: 16px solid #3498db; /* Blue */
@@ -28,6 +42,17 @@
                 margin-left: 40%;
                 padding: 50px;
             }
+
+            .loaderButton {
+                border: 16px solid #f3f3f3; /* Light grey */
+                border-top: 16px solid #3498db; /* Blue */
+                border-radius: 50%;
+                animation: spin 2s linear infinite;
+                display: inline-flex;
+                padding: 5px;
+                margin-right: 25px;
+            }
+
 
             @keyframes spin {
                 0% {
@@ -49,30 +74,35 @@
             <h2>Generate image</h2>
             <template is="dom-if" if="{{!disabled}}">
                 <template is="dom-if" if="{{showImage}}">
-                    <div>
-                        <img style='max-width: 512px; max-height: 512px' id='resultImage'
-                             src="[[image]]"/>
+                    <div class="image-container">
+                        <img id="resultImage" src="[[image]]" alt="Generated Image" class="generated-image">
                     </div>
                     <div class="buttons">
-                        <paper-button dialog-dismiss>Cancel</paper-button>
-                        <paper-button id="btnNewRequest"
-                                      class="primary"
-                                      on-tap="_sendNewRequest"
-                        >
-                            Send new request
-                        </paper-button>
-                        <paper-button id="btnRegenerate"
-                                      class="primary"
-                                      on-tap="_generateImage"
-                        >
-                            Regenerate
-                        </paper-button>
-                        <paper-button id="btnCreate"
-                                      class="primary"
-                                      on-tap="_createDocument"
-                        >
-                            Create document
-                        </paper-button>
+                        <template is="dom-if" if="{{!disabledButton}}">
+                            <paper-button dialog-dismiss>Cancel</paper-button>
+                            <paper-button id="btnNewRequest"
+                                          class="primary"
+                                          on-tap="_sendNewRequest"
+                            >
+                                Send new request
+                            </paper-button>
+                            <paper-button id="btnRegenerate"
+                                          class="primary"
+                                          on-tap="_generateImage"
+                            >
+                                Regenerate
+                            </paper-button>
+                            <paper-button id="btnCreate"
+                                          class="primary"
+                                          on-tap="_createDocument"
+                            >
+                                Create document
+                            </paper-button>
+                        </template>
+                        <template is="dom-if" if="{{disabledButton}}">
+                            <div></div>
+                            <div class="loaderButton"></div>
+                        </template>
                     </div>
                 </template>
                 <template is="dom-if" if="{{!showImage}}">
@@ -135,6 +165,11 @@
                     value: false
                 },
 
+                disabledButton: {
+                    type: Boolean,
+                    value: false
+                },
+
                 showImage: {
                     type: Boolean,
                     value: false,
@@ -157,6 +192,7 @@
                 this.exclusion = null;
                 this.showImage = false;
                 this.disabled = false;
+                this.disabledButton = false;
                 this.batchId = null;
                 this.image = null;
                 this.title = null;
@@ -180,6 +216,7 @@
                         },
                     }
                 };
+                this.disabledButton = true;
                 operation.execute()
                     .then(function (response) {
                         let dialog = this.$.dialog;
@@ -190,6 +227,7 @@
                         })();
                     }.bind(this))
                     .catch(function (err) {
+                        this.disabledButton = false;
                         this.fire('notify', {message: err.value});
                     }.bind(this));
             },

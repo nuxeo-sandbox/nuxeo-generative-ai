@@ -38,7 +38,7 @@ public class GenerateImageOperation {
     public Blob run() {
         try {
             Blob result = Framework.getService(GenerativeAI.class)
-                    .generateImage(null, prompt, GenerativeAIProvider.IMG_1024);
+                    .generateImage(null, combineParameters(prompt, imageType, exclusion), GenerativeAIProvider.IMG_1024);
             if (result != null) {
                 BatchManager bm = Framework.getService(BatchManager.class);
                 String batchId = bm.initBatch();
@@ -50,6 +50,21 @@ public class GenerateImageOperation {
             return new StringBlob(messageToJson(e.getMessage()).toString(), "application/json");
         }
         return new StringBlob(messageToJson("No image generated, please try again").toString(), "application/json");
+    }
+
+    private String combineParameters(String prompt, String imageType, String exclusion) {
+        // Combine the parameters into a single string
+        StringBuilder combined = new StringBuilder();
+        if (prompt != null) {
+            combined.append(prompt);
+        }
+        if (imageType != null) {
+            combined.append(".Image type:").append(imageType);
+        }
+        if (exclusion != null) {
+            combined.append(".Exclude:").append(exclusion);
+        }
+        return combined.toString().trim();
     }
 
     private JSONObject toJson(String title, String batchId, Blob image) throws JSONException, IOException {
