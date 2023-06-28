@@ -1,0 +1,274 @@
+<dom-module id="generative-ai-dialog">
+    <template>
+        <style include="nuxeo-styles">
+            nuxeo-dialog {
+                min-width: 50%;
+                top: 100px;
+            }
+
+            @media (max-width: 1024px) {
+                nuxeo-dialog {
+                    min-width: 0;
+                    width: 90%;
+                }
+            }
+
+            nuxeo-dialog .buttons {
+                @apply --layout-horizontal;
+                @apply --layout-justified;
+                margin-top: 16px;
+                background-color: var(--nuxeo-dialog-buttons-bar, white);
+            }
+
+            .image-container {
+                display: flex;
+                justify-content: center;
+                margin-bottom: 16px;
+            }
+
+            .generated-image {
+                max-width: 100%;
+                max-height: 512px;
+                object-fit: contain;
+            }
+
+
+            .loader {
+                border: 16px solid #f3f3f3; /* Light grey */
+                border-top: 16px solid #3498db; /* Blue */
+                border-radius: 50%;
+                animation: spin 2s linear infinite;
+                display: inline-flex;
+                margin-left: 40%;
+                padding: 50px;
+            }
+
+            .loaderButton {
+                border: 16px solid #f3f3f3; /* Light grey */
+                border-top: 16px solid #3498db; /* Blue */
+                border-radius: 50%;
+                animation: spin 2s linear infinite;
+                display: inline-flex;
+                padding: 5px;
+                margin-right: 25px;
+            }
+
+
+            @keyframes spin {
+                0% {
+                    transform: rotate(0deg);
+                }
+                100% {
+                    transform: rotate(360deg);
+                }
+            }
+        </style>
+
+        <template is="dom-if" if="[[hasFacet(document, 'Folderish')]]">
+            <paper-icon-button icon="image:add-to-photos" label="Generate image" on-tap="_toggleDialog">
+                <nuxeo-tooltip>Generate image</nuxeo-tooltip>
+            </paper-icon-button>
+        </template>
+
+        <nuxeo-dialog id="dialog" modal no-auto-focus class="dialog">
+            <h2>Generate image</h2>
+            <template is="dom-if" if="{{!disabled}}">
+                <template is="dom-if" if="{{showImage}}">
+                    <div class="image-container">
+                        <img id="resultImage" src="[[image]]" alt="Generated Image" class="generated-image">
+                    </div>
+                    <div class="buttons">
+                        <template is="dom-if" if="{{!disabledButton}}">
+                            <paper-button dialog-dismiss>Cancel</paper-button>
+                            <paper-button id="btnNewRequest"
+                                          class="primary"
+                                          on-tap="_sendNewRequest"
+                            >
+                                Send new request
+                            </paper-button>
+                            <paper-button id="btnRegenerate"
+                                          class="primary"
+                                          on-tap="_generateImage"
+                            >
+                                Regenerate
+                            </paper-button>
+                            <paper-button id="btnCreate"
+                                          class="primary"
+                                          on-tap="_createDocument"
+                            >
+                                Create document
+                            </paper-button>
+                        </template>
+                        <template is="dom-if" if="{{disabledButton}}">
+                            <div></div>
+                            <div class="loaderButton"></div>
+                        </template>
+                    </div>
+                </template>
+                <template is="dom-if" if="{{!showImage}}">
+                    <div>
+                        <nuxeo-input value={{prompt}} required="true"
+                                     label="Description" type="text" name="prompt" role="widget" ~></nuxeo-input>
+
+                        <nuxeo-input value={{imageType}} required="true"
+                                     label="Image type" type="text" name="imageType" role="widget" ~></nuxeo-input>
+
+                        <nuxeo-input value={{exclusion}}
+                                     label="Exclusion" type="text" name="exclusion" role="widget" ~></nuxeo-input>
+
+                    </div>
+                    <div class="buttons">
+                        <paper-button dialog-dismiss>Cancel</paper-button>
+                        <paper-button id="btnGenerate"
+                                      class="primary"
+                                      on-tap="_generateImage">
+                            Generate
+                        </paper-button>
+                    </div>
+                </template>
+            </template>
+            <template is="dom-if" if="{{disabled}}">
+                <div class="loader"></div>
+            </template>
+        </nuxeo-dialog>
+
+
+        <nuxeo-operation op="GenerativeAi.GenerateImage" id="genImage"></nuxeo-operation>
+        <nuxeo-operation id="createDocOp" op="Document.Create"></nuxeo-operation>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'generative-ai-dialog',
+            behaviors: [Nuxeo.LayoutBehavior],
+            properties: {
+                document: {
+                    type: Object,
+                },
+
+                prompt: {
+                    type: String,
+                },
+
+                imageType: {
+                    type: String,
+                    value: null
+                },
+
+                exclusion: {
+                    type: String,
+                    value: null
+                },
+
+                disabled: {
+                    type: Boolean,
+                    value: false
+                },
+
+                disabledButton: {
+                    type: Boolean,
+                    value: false
+                },
+
+                showImage: {
+                    type: Boolean,
+                    value: false,
+                },
+
+                image: String,
+                batchId: String,
+                title: String,
+
+            },
+
+            _toggleDialog: function () {
+                this._reset();
+                this.$.dialog.toggle();
+            },
+
+            _reset: function () {
+                this.prompt = null;
+                this.imageType = null;
+                this.exclusion = null;
+                this.showImage = false;
+                this.disabled = false;
+                this.disabledButton = false;
+                this.batchId = null;
+                this.image = null;
+                this.title = null;
+            },
+
+            _sendNewRequest: function () {
+                this._reset();
+            },
+
+            _createDocument: function () {
+                let operation = this.$.createDocOp;
+                operation.input = this.document.uid;
+                operation.params = {
+                    type: "Picture",
+                    name: this.title,
+                    properties: {
+                        "dc:title": this.title,
+                        'file:content': {
+                            'upload-batch': this.batchId,
+                            'upload-fileId': '0',
+                        },
+                    }
+                };
+                this.disabledButton = true;
+                operation.execute()
+                    .then(function (response) {
+                        let dialog = this.$.dialog;
+                        (async () => {
+                            await new Promise((resolve) => setTimeout(resolve, 1200));
+                            dialog.toggle();
+                            this.navigateTo("document", response.uid);
+                        })();
+                    }.bind(this))
+                    .catch(function (err) {
+                        this.disabledButton = false;
+                        this.fire('notify', {message: err.value});
+                    }.bind(this));
+            },
+
+            _generateImage: function () {
+                if (!this.prompt || this.prompt.length < 3) {
+                    this.fire('notify', {message: 'Insert an image description greater than 3 characters'});
+                    return;
+                }
+                if (!this.imageType) {
+                    this.fire('notify', {message: 'Select an image type'});
+                    return;
+                }
+
+                this.disabled = true;
+                let operation = this.$.genImage;
+                operation.input = this.document.uid;
+                operation.params = {
+                    prompt: this.prompt,
+                    imageType: this.group,
+                    exclusion: this.exclusion,
+                };
+
+                operation.execute()
+                    .then(function (response) {
+                        if (response.message != null) {
+                            this.fire('notify', {message: response.message});
+                            this.disabled = false;
+                        } else {
+                            this.disabled = false;
+                            this.showImage = true;
+                            this.image = 'data:image/jpeg;base64,' + response.content;
+                            this.batchId = response.batchId;
+                            this.title = response.title;
+                        }
+                    }.bind(this))
+                    .catch(function (err) {
+                        this.fire('notify', {message: err.value});
+                        this.disabled = false;
+                    }.bind(this));
+            },
+        });
+    </script>
+</dom-module>

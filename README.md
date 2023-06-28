@@ -7,6 +7,14 @@ This plugin for [Nuxeo Platform](http://hyland/com/nuxeo) allows for generating 
 
 <hr>
 
+## Configuration
+
+Add to nuxeo.conf the following configurations and replace ${ORGANIZATION}/${API_KEY}:
+
+generative.ai.openai.organization=${ORGANIZATION}
+
+generative.ai.openai.apikey=${API_KEY}
+
 ## Usage
 
 
