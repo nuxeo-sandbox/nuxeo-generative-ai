@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<component name="io.maretha.web.ui.imagegenerator.properties.contrib">
+  <require>org.nuxeo.web.ui.properties.contrib</require>
+
+  <extension target="org.nuxeo.runtime.ConfigurationService" point="configuration">
+    <property name="org.nuxeo.web.ui.imagegenerator.containerDocTypes">${generative.ai.imagegenerator.containerDocTypes}</property>
+  </extension>
+</component>

@@ -5,3 +5,6 @@
 nuxeo.template.includes=common
 
 # org.nuxeo.ecm.instance.description=Nuxeo ECM customized with nuxeo-generative-ai-package
+
+generative.ai.openai.organization=Nuxeo
+generative.ai.imagegenerator.containerDocTypes=Workspace,Folder

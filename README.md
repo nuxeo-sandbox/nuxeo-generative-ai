@@ -6,12 +6,22 @@ This plugin for [Nuxeo Platform](http://hyland/com/nuxeo) allows for generating 
 
 Add to nuxeo.conf the following configurations and replace ${ORGANIZATION}/${API_KEY}:
 
-generative.ai.openai.organization=${ORGANIZATION}
 
+```
+generative.ai.openai.organization=${ORGANIZATION}
 generative.ai.openai.apikey=${API_KEY}
+```
+
+Only `generative.ai.openai.apikey` is mandatory. The property `generative.ai.openai.organization` defaults to Nuxeo as an organization.
 
 ## Usage
 
+By default, you can generate images in Folders and Workspaces by clicking the "Generate Image" button available in the
+DOCUMENT_ACTIONS in the container.  The document types where this is enabled can be configured by setting the following property:
+
+```
+generative.ai.imagegenerator.containerDocTypes=Workspace,Folder
+```
 
 ## Operations
 

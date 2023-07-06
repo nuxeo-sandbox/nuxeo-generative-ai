@@ -6,5 +6,6 @@ Bundle-Version: 1.0.0
 Bundle-Name: nuxeo-generative-ai-web
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: org.nuxeo.generative.ai.nuxeo-generative-ai-web;singleton=true
-Nuxeo-Component: OSGI-INF/generative-ai-web-bundle-contrib.xml
+Nuxeo-Component: OSGI-INF/generative-ai-web-bundle-contrib.xml,
+ OSGI-INF/web-ui-properties.xml
 

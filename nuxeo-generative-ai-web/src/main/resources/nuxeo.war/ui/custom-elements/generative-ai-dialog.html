@@ -64,7 +64,7 @@
             }
         </style>
 
-        <template is="dom-if" if="[[hasFacet(document, 'Folderish')]]">
+        <template is="dom-if" if="[[_isGenerationEnabledInContainerForDoc(document)]]">
             <paper-icon-button icon="image:add-to-photos" label="Generate image" on-tap="_toggleDialog">
                 <nuxeo-tooltip>Generate image</nuxeo-tooltip>
             </paper-icon-button>
@@ -140,7 +140,7 @@
     <script>
         Polymer({
             is: 'generative-ai-dialog',
-            behaviors: [Nuxeo.LayoutBehavior],
+            behaviors: [Nuxeo.LayoutBehavior, Nuxeo.GenerativeConfigurationBehaviour],
             properties: {
                 document: {
                     type: Object,
