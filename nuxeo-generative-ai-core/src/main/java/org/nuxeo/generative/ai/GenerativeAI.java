@@ -25,16 +25,11 @@ import org.nuxeo.ecm.core.api.Blob;
 public interface GenerativeAI {
 
     public static final String DEFAULT_PROVIDER_NAME = "openai";
-    
+
     // Returns the default provider is name is empty or null
     public GenerativeAIProvider getProvider(String name);
-    
+
     // If provider is null or empty => use the default provider
     public Blob generateImage(String provider, String prompt, String size) throws IOException;
-    
-    // If provider is null or empty => use the default provider
-    public Blob generateImages(String provider, String prompt, int howMany, String size) throws IOException;
-    
- // If provider is null or empty => use the default provider
-    public String generateText(String provider, String prompt) throws IOException;
+
 }

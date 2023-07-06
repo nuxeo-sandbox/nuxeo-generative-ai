@@ -23,7 +23,6 @@ import org.nuxeo.common.xmap.annotation.XNode;
 import org.nuxeo.common.xmap.annotation.XObject;
 
 /**
- * 
  * @since 2021.37
  */
 @XObject("configuration")

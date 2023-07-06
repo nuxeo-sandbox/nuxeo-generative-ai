@@ -15,6 +15,8 @@
  */
 package org.nuxeo.generative.operations;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.nuxeo.ecm.automation.core.annotations.Operation;
@@ -32,19 +34,18 @@ import org.nuxeo.runtime.api.Framework;
 import java.io.IOException;
 import java.util.Base64;
 
-@Operation(id = GenerateImageOperation.ID, category = ProjectConstant.CAT_GENERATIVE_AI, label = "Generate an image",
-        description = "Generate an image based on given conditions")
+@Operation(id = GenerateImageOperation.ID, category = ProjectConstant.CAT_GENERATIVE_AI, label = "Generate an image", description = "Generate an image based on given conditions")
 public class GenerateImageOperation {
 
     public static final String ID = "GenerativeAi.GenerateImage";
 
+    private static final Log log = LogFactory.getLog(GenerateImageOperation.class);
+
     @Param(name = "prompt")
     protected String prompt;
 
-
     @Param(name = "imageType", required = false)
     protected String imageType;
-
 
     @Param(name = "exclusion", required = false)
     protected String exclusion;
@@ -53,7 +54,8 @@ public class GenerateImageOperation {
     public Blob run() {
         try {
             Blob result = Framework.getService(GenerativeAI.class)
-                    .generateImage(null, combineParameters(prompt, imageType, exclusion), GenerativeAIProvider.IMG_1024);
+                                   .generateImage(null, combineParameters(prompt, imageType, exclusion),
+                                           GenerativeAIProvider.IMG_1024);
             if (result != null) {
                 BatchManager bm = Framework.getService(BatchManager.class);
                 String batchId = bm.initBatch();
@@ -62,6 +64,7 @@ public class GenerateImageOperation {
                 return new StringBlob(toJson(result.getFilename(), batchId, result).toString(), "application/json");
             }
         } catch (Exception e) {
+            log.error(e);
             return new StringBlob(messageToJson(e.getMessage()).toString(), "application/json");
         }
         return new StringBlob(messageToJson("No image generated, please try again").toString(), "application/json");

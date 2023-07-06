@@ -46,7 +46,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
 @RunWith(FeaturesRunner.class)
-@Features({AutomationFeature.class, MockitoFeature.class})
+@Features({ AutomationFeature.class, MockitoFeature.class })
 @RepositoryConfig(init = DefaultRepositoryInit.class, cleanup = Granularity.METHOD)
 @Deploy("org.nuxeo.generative.ai.nuxeo-generative-ai-core")
 public class GenerateImageOperationTest {

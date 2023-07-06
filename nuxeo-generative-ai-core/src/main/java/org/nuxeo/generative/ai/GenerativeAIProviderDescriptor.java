@@ -26,7 +26,6 @@ import org.nuxeo.common.xmap.annotation.XNodeMap;
 import org.nuxeo.common.xmap.annotation.XObject;
 
 /**
- * 
  * @since 2021.37
  */
 @XObject("provider")
@@ -44,7 +43,7 @@ public class GenerativeAIProviderDescriptor {
     public String getName() {
         return name;
     }
-    
+
     public Class<?> getKlass() {
         return klass;
     }

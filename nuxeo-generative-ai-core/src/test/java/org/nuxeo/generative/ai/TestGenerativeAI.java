@@ -40,19 +40,21 @@ public class TestGenerativeAI {
     public void testService() {
         assertNotNull(generativeai);
     }
-    
+
     @Test
     public void shouldHaveADefaultProvider() {
         GenerativeAIProvider defaultProvider = generativeai.getProvider(null);
-        
+
         assertNotNull(defaultProvider);
     }
-    
+
     @Test
     public void shouldGenerateImageWithDefaultProvider() throws Exception {
-        
-        Blob result = generativeai.generateImage(null, "a woman wearing a red jacket with the name of a fake brand named Rainier, she has sunglasses and a cap and she is smiling, we see all the jacket", GenerativeAIProvider.IMG_512);
+
+        Blob result = generativeai.generateImage(null,
+                "a woman wearing a red jacket with the name of a fake brand named Rainier, she has sunglasses and a cap and she is smiling, we see all the jacket",
+                GenerativeAIProvider.IMG_512);
         assertNotNull(result);
-        
+
     }
 }
