@@ -1,6 +1,6 @@
 # nuxeo-generative-ai
 
-This plugin for [Nuxeo Platform](http://hyland/com/nuxeo) allows for generating text/image from AI service using OpenAI's DALL-E .
+This plugin for [Nuxeo Platform](http://hyland/com/nuxeo) allows for generating images from user's input text using OpenAI's DALL-E model.
 
 ## Configuration
 
