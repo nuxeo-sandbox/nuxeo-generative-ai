@@ -108,13 +108,13 @@
                 <template is="dom-if" if="{{!showImage}}">
                     <div>
                         <nuxeo-input value={{prompt}} required="true"
-                                     label="Description" type="text" name="prompt" role="widget" ~></nuxeo-input>
+                                     label="Description" type="text" name="prompt" role="widget">
+						</nuxeo-input>
 
-                        <nuxeo-input value={{imageType}} required="true"
-                                     label="Image type" type="text" name="imageType" role="widget" ~></nuxeo-input>
-
-                        <nuxeo-input value={{exclusion}}
-                                     label="Exclusion" type="text" name="exclusion" role="widget" ~></nuxeo-input>
+						<nuxeo-directory-suggestion value="{{imageType}}" required="true" role="widget" 
+									 label="Image type" directory-name="VOC_GenAiImageType" min-chars="0" 
+									 multiple="true">
+						</nuxeo-directory-suggestion>						 
 
                     </div>
                     <div class="buttons">

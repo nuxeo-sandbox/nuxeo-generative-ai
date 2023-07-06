@@ -30,7 +30,8 @@ In order to generate the image you must set two parameters:
 
 After the image is generated you choose to regenerate or create a document with it. The type of the document that is created is configurable and defaults to `Picture`. You can change it by setting:
 
-```generative.ai.imagegenerator.docType=Picture
+```
+generative.ai.imagegenerator.docType=Picture
 ```
 
 
