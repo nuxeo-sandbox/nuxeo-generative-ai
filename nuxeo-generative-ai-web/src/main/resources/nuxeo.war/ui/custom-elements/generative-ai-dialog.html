@@ -203,10 +203,11 @@
             },
 
             _createDocument: function () {
+                let docType = this._getGeneratedImageDocumentType();
                 let operation = this.$.createDocOp;
                 operation.input = this.document.uid;
                 operation.params = {
-                    type: "Picture",
+                    type: docType,
                     name: this.title,
                     properties: {
                         "dc:title": this.title,

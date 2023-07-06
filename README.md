@@ -1,6 +1,6 @@
 # nuxeo-generative-ai
 
-This plugin for [Nuxeo Platform](http://hyland/com/nuxeo) allows for generating text/image from AI service.
+This plugin for [Nuxeo Platform](http://hyland/com/nuxeo) allows for generating text/image from AI service using OpenAI's DALL-E .
 
 ## Configuration
 
@@ -23,7 +23,15 @@ DOCUMENT_ACTIONS in the container.  The document types where this is enabled can
 generative.ai.imagegenerator.containerDocTypes=Workspace,Folder
 ```
 
-## Operations
+In order to generate the image you must set two parameters:
+- Description: for example "dogs playing"
+- Image type: can be "realistic" etc
+
+
+After the image is generated you choose to regenerate or create a document with it. The type of the document that is created is configurable and defaults to `Picture`. You can change it by setting:
+
+```generative.ai.imagegenerator.docType=Picture
+```
 
 
 

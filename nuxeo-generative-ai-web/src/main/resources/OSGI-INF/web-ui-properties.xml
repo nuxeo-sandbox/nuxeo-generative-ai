@@ -4,5 +4,7 @@
 
   <extension target="org.nuxeo.runtime.ConfigurationService" point="configuration">
     <property name="org.nuxeo.web.ui.imagegenerator.containerDocTypes">${generative.ai.imagegenerator.containerDocTypes}</property>
+    <property name="org.nuxeo.web.ui.imagegenerator.docType">${generative.ai.imagegenerator.docType}</property>
+  
   </extension>
 </component>

@@ -4,6 +4,14 @@
 
   Nuxeo.GenerativeConfigurationBehaviour = {
 
+    _getGeneratedImageDocumentType() {
+     let docType = "Picture";
+      if( Nuxeo.UI.config && Nuxeo.UI.config.imagegenerator && Nuxeo.UI.config.imagegenerator.docType) {
+          docType  = Nuxeo.UI.config.imagegenerator.docType;
+       }
+       return docType;
+    },
+    
     _isGenerationEnabledInContainerForDoc: function(document) {
        let enabledDocTypes = [];
 
