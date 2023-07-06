@@ -16,6 +16,16 @@
  */
 package org.nuxeo.generative.operations;
 
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.inject.Inject;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -36,14 +46,6 @@ import org.nuxeo.runtime.mockito.RuntimeService;
 import org.nuxeo.runtime.test.runner.Deploy;
 import org.nuxeo.runtime.test.runner.Features;
 import org.nuxeo.runtime.test.runner.FeaturesRunner;
-
-import javax.inject.Inject;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.when;
 
 @RunWith(FeaturesRunner.class)
 @Features({ AutomationFeature.class, MockitoFeature.class })
@@ -71,6 +73,7 @@ public class GenerateImageOperationTest {
         OperationContext ctx = new OperationContext(session);
         Map<String, String> params = new HashMap<>();
         params.put("prompt", "test");
-        automationService.run(ctx, GenerateImageOperation.ID, params);
+        Blob result = (Blob) automationService.run(ctx, GenerateImageOperation.ID, params);
+        assertNotNull(result);
     }
 }
