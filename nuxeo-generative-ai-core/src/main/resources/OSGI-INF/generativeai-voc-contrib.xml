@@ -3,14 +3,14 @@
 <component name="org.nuxeo.generative.ai.voc.contrib">
 
     <extension target="org.nuxeo.ecm.directory.GenericDirectory" point="directories">
-        <directory name="VOC_GenAiImageType" extends="template-vocabulary">
+        <directory name="VOC_GenAiImageStyle" extends="template-vocabulary">
             <autoincrementIdField>false</autoincrementIdField>
             <createTablePolicy>on_missing_columns</createTablePolicy>
             <dataLoadingPolicy>skip_duplicate</dataLoadingPolicy>
-            <table>studio_vocabulary_VOC_GenAiImageType</table>
-            <dataFile>data/vocabularies/VOC_GenAiImageType.csv</dataFile>
-            <cacheEntryName>vocab-VOC_GenAiImageType-cache</cacheEntryName>
-            <cacheEntryWithoutReferencesName>vocab-VOC_GenAiImageType-cache-without-references</cacheEntryWithoutReferencesName>
+            <table>studio_vocabulary_VOC_GenAiImageStyle</table>
+            <dataFile>data/vocabularies/VOC_GenAiImageStyle.csv</dataFile>
+            <cacheEntryName>vocab-VOC_GenAiImageStyle-cache</cacheEntryName>
+            <cacheEntryWithoutReferencesName>vocab-VOC_GenAiImageStyle-cache-without-references</cacheEntryWithoutReferencesName>
         </directory>
     </extension>
 
