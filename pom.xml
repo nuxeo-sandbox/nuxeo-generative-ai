@@ -9,7 +9,7 @@
 
   <groupId>org.nuxeo.generative.ai</groupId>
   <artifactId>nuxeo-generative-ai-parent</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0</version>
   <name>Nuxeo generative ai parent</name>
   <description />
   <packaging>pom</packaging>
@@ -23,6 +23,7 @@
   <modules>
     <module>nuxeo-generative-ai-core</module>
     <module>nuxeo-generative-ai-package</module>
+    <module>nuxeo-generative-ai-web</module>
   </modules>
 
   <scm />
@@ -43,6 +44,11 @@
       <dependency>
         <groupId>org.nuxeo.generative.ai</groupId>
         <artifactId>nuxeo-generative-ai-package</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.nuxeo.generative.ai</groupId>
+        <artifactId>nuxeo-generative-ai-web</artifactId>
         <version>${project.version}</version>
       </dependency>
     </dependencies>

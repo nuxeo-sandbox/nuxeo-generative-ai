@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 2023 Hyland (http://hyland.com/)  and others.
+ * Copyright 2023 Maretha Solutions LLC - https://maretha.io.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,6 @@ import org.nuxeo.common.xmap.annotation.XNodeMap;
 import org.nuxeo.common.xmap.annotation.XObject;
 
 /**
- * 
  * @since 2021.37
  */
 @XObject("provider")
@@ -44,7 +43,7 @@ public class GenerativeAIProviderDescriptor {
     public String getName() {
         return name;
     }
-    
+
     public Class<?> getKlass() {
         return klass;
     }
