@@ -12,24 +12,11 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Contributors:
- *     Thibaud Arguillere
  */
-package org.nuxeo.generative.ai;
+package org.nuxeo.generative.commons;
 
-import java.io.IOException;
+public class ProjectConstant {
 
-import org.nuxeo.ecm.core.api.Blob;
-
-public interface GenerativeAI {
-
-    public static final String DEFAULT_PROVIDER_NAME = "openai";
-
-    // Returns the default provider is name is empty or null
-    public GenerativeAIProvider getProvider(String name);
-
-    // If provider is null or empty => use the default provider
-    public Blob generateImage(String provider, String prompt, String size) throws IOException;
+    public static final String CAT_GENERATIVE_AI = "GenerativeAi";
 
 }

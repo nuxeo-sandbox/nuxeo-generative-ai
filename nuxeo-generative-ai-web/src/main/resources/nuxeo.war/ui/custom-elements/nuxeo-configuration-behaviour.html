@@ -1,0 +1,32 @@
+<script>
+  /* eslint-disable no-var, no-use-before-define */
+  var Nuxeo = Nuxeo || {};
+
+  Nuxeo.GenerativeConfigurationBehaviour = {
+
+    _getGeneratedImageDocumentType() {
+     let docType = "Picture";
+      if( Nuxeo.UI.config && Nuxeo.UI.config.imagegenerator && Nuxeo.UI.config.imagegenerator.docType) {
+          docType  = Nuxeo.UI.config.imagegenerator.docType;
+       }
+       return docType;
+    },
+    
+    _isGenerationEnabledInContainerForDoc: function(document) {
+       let enabledDocTypes = [];
+
+       if( Nuxeo.UI.config && Nuxeo.UI.config.imagegenerator && Nuxeo.UI.config.imagegenerator.containerDocTypes) {
+          enabledDocTypes = Nuxeo.UI.config.imagegenerator.containerDocTypes.split(",");
+       }
+       if (enabledDocTypes.length === 0 ) {
+          return true;
+       }
+       if (document && document.type && enabledDocTypes.includes(document.type)) {
+          return true;
+       }
+
+       return false;
+   },
+
+  };
+</script>

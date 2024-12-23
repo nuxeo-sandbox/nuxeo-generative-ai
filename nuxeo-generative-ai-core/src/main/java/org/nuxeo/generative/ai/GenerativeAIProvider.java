@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 2023 Hyland (http://hyland.com/)  and others.
+ * Copyright 2023 Maretha Solutions LLC - https://maretha.io.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,6 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.util.List;
 
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.nuxeo.ecm.core.api.Blob;
@@ -47,10 +46,6 @@ public interface GenerativeAIProvider {
     public String getName();
 
     public Blob generateImage(String prompt, String size) throws IOException;
-
-    public Blob generateImages(String prompt, int howMany, String size) throws IOException;
-
-    public String generateText(String prompt) throws IOException;
 
     /**
      * If fileName is passed and valid, it is used (and the extension is added depending on the received content).<br>
@@ -75,18 +70,18 @@ public interface GenerativeAIProvider {
                 ReadableByteChannel rbc = Channels.newChannel(in);
                 FileOutputStream fos = new FileOutputStream(resultFile.getAbsolutePath())) {
             fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
-            
+
             URLConnection connection = url.openConnection();
             String mimeType = connection.getContentType();
             result.setMimeType(mimeType);
-            
+
             MimetypeRegistry mimetypeService = Framework.getService(MimetypeRegistry.class);
             List<String> exts = mimetypeService.getExtensionsFromMimetypeName(mimeType);
             String ext = "";
-            if(exts.size() > 0) {
+            if (exts.size() > 0) {
                 ext = exts.get(0);
             }
-            if(StringUtils.isBlank(fileName)) {
+            if (StringUtils.isBlank(fileName)) {
                 fileName = StringUtils.isBlank(provider) ? "nuxeo-generative-ai-" : provider + "-";
                 String formattedDateTime = DateFormatUtils.format(System.currentTimeMillis(), "yyyy-MM-dd-HHhmm");
                 fileName += formattedDateTime;
