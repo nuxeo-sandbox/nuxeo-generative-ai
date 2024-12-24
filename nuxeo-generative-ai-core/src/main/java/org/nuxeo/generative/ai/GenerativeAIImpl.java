@@ -19,7 +19,6 @@
 package org.nuxeo.generative.ai;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,8 +27,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.nuxeo.ecm.core.api.Blob;
 import org.nuxeo.ecm.core.api.NuxeoException;
-import org.nuxeo.runtime.model.ComponentContext;
-import org.nuxeo.runtime.model.ComponentInstance;
 import org.nuxeo.runtime.model.DefaultComponent;
 import org.nuxeo.runtime.model.Extension;
 
@@ -46,30 +43,6 @@ public class GenerativeAIImpl extends DefaultComponent implements GenerativeAI {
     protected Map<String, GenerativeAIProvider> providers = new HashMap<>();
 
     /**
-     * Component activated notification.
-     * Called when the component is activated. All component dependencies are resolved at that moment.
-     * Use this method to initialize the component.
-     *
-     * @param context the component context.
-     */
-    @Override
-    public void activate(ComponentContext context) {
-        super.activate(context);
-    }
-
-    /**
-     * Component deactivated notification.
-     * Called before a component is unregistered.
-     * Use this method to do cleanup if any and free any resources held by the component.
-     *
-     * @param context the component context.
-     */
-    @Override
-    public void deactivate(ComponentContext context) {
-        super.deactivate(context);
-    }
-
-    /**
      * Registers the given extension.
      *
      * @param extension the extension to register
@@ -77,7 +50,6 @@ public class GenerativeAIImpl extends DefaultComponent implements GenerativeAI {
     @Override
     public void registerExtension(Extension extension) {
         super.registerExtension(extension);
-
         Object[] contribs = extension.getContributions();
         if (contribs == null || contribs.length == 0) {
             log.warn("No contribution for the '" + extension.getExtensionPoint()
@@ -86,57 +58,26 @@ public class GenerativeAIImpl extends DefaultComponent implements GenerativeAI {
         }
 
         switch (extension.getExtensionPoint()) {
-        case CONFIG_EXT_POINT:
-            // There should be only one contrib
-            config = (GenerativeAIDescriptor) contribs[0];
-            break;
+            case CONFIG_EXT_POINT:
+                // There should be only one contrib
+                config = (GenerativeAIDescriptor) contribs[0];
+                break;
 
-        case PROVIDER_EXT_POINT:
-            for (Object contrib : contribs) {
-                GenerativeAIProviderDescriptor providerDesc = (GenerativeAIProviderDescriptor) contrib;
-                try {
-                    GenerativeAIProvider provider = (GenerativeAIProvider) providerDesc.getKlass()
-                                                                                       .getConstructor(
-                                                                                               GenerativeAIProviderDescriptor.class)
-                                                                                       .newInstance(providerDesc);
-                    providers.put(providerDesc.name, provider);
-                } catch (ReflectiveOperationException e) {
-                    throw new NuxeoException(e);
+            case PROVIDER_EXT_POINT:
+                for (Object contrib : contribs) {
+                    GenerativeAIProviderDescriptor providerDesc = (GenerativeAIProviderDescriptor) contrib;
+                    try {
+                        GenerativeAIProvider provider = (GenerativeAIProvider) providerDesc.getKlass()
+                                .getConstructor(
+                                        GenerativeAIProviderDescriptor.class)
+                                .newInstance(providerDesc);
+                        providers.put(providerDesc.name, provider);
+                    } catch (ReflectiveOperationException e) {
+                        throw new NuxeoException(e);
+                    }
                 }
-            }
-            break;
+                break;
         }
-    }
-
-    /**
-     * Unregisters the given extension.
-     *
-     * @param extension the extension to unregister
-     */
-    @Override
-    public void unregisterExtension(Extension extension) {
-        super.unregisterExtension(extension);
-    }
-
-    /**
-     * Start the component. This method is called after all the components were resolved and activated
-     *
-     * @param context the component context. Use it to get the current bundle context
-     */
-    @Override
-    public void start(ComponentContext context) {
-        // do nothing by default. You can remove this method if not used.
-    }
-
-    /**
-     * Stop the component.
-     *
-     * @param context the component context. Use it to get the current bundle context
-     * @throws InterruptedException
-     */
-    @Override
-    public void stop(ComponentContext context) throws InterruptedException {
-        // do nothing by default. You can remove this method if not used.
     }
 
     @Override
@@ -157,14 +98,12 @@ public class GenerativeAIImpl extends DefaultComponent implements GenerativeAI {
     @Override
     public Blob generateImages(String provider, String prompt, int howMany, String size) throws IOException {
         GenerativeAIProvider aiProvider = getProviderOrDefault(provider);
-
         return aiProvider.generateImages(prompt, howMany, size);
     }
 
     @Override
     public String generateText(String provider, String prompt) throws IOException {
         GenerativeAIProvider aiProvider = getProviderOrDefault(provider);
-
         return aiProvider.generateText(prompt);
     }
 
@@ -175,7 +114,6 @@ public class GenerativeAIImpl extends DefaultComponent implements GenerativeAI {
         if (StringUtils.isBlank(name)) {
             name = GenerativeAI.DEFAULT_PROVIDER_NAME;
         }
-
         return getProvider(name);
     }
 }

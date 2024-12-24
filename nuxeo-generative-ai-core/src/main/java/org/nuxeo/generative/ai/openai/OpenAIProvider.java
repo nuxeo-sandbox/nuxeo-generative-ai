@@ -93,7 +93,7 @@ public class OpenAIProvider implements GenerativeAIProvider {
         }
     }
 
-    protected boolean checkApiKey() {
+    public boolean checkApiKey() {
         if (StringUtils.isBlank(apiKey)) {
             log.warn("OpenAI API Key is not valid => not calling the service");
             return false;

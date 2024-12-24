@@ -22,13 +22,13 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.util.List;
 
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.nuxeo.ecm.core.api.Blob;
@@ -38,39 +38,28 @@ import org.nuxeo.runtime.api.Framework;
 
 public interface GenerativeAIProvider {
 
-    public static final String IMG_256 = "256x256";
+    String IMG_512 = "512x512";
 
-    public static final String IMG_512 = "512x512";
+    String getName();
 
-    public static final String IMG_1024 = "1024x1024";
+    Blob generateImage(String prompt, String size) throws IOException;
 
-    public String getName();
+    Blob generateImages(String prompt, int howMany, String size) throws IOException;
 
-    public Blob generateImage(String prompt, String size) throws IOException;
-
-    public Blob generateImages(String prompt, int howMany, String size) throws IOException;
-
-    public String generateText(String prompt) throws IOException;
+    String generateText(String prompt) throws IOException;
 
     /**
      * If fileName is passed and valid, it is used (and the extension is added depending on the received content).<br>
      * If fileName is not passed, the filename is built using the provider and a timestamp.
-     * 
-     * @param urlStr
-     * @param fileName
-     * @param provider
-     * @return
-     * @throws IOException
-     * @since TODO
      */
-    public static Blob downloadFile(String urlStr, String fileName, String provider) throws IOException {
+    static Blob downloadFile(String urlStr, String fileName, String provider) throws IOException {
 
         Blob result;
 
         result = Blobs.createBlobWithExtension(".tmp");
         File resultFile = result.getFile();
 
-        URL url = new URL(urlStr);
+        URL url = URI.create(urlStr).toURL();
         try (InputStream in = url.openStream();
                 ReadableByteChannel rbc = Channels.newChannel(in);
                 FileOutputStream fos = new FileOutputStream(resultFile.getAbsolutePath())) {
@@ -83,8 +72,8 @@ public interface GenerativeAIProvider {
             MimetypeRegistry mimetypeService = Framework.getService(MimetypeRegistry.class);
             List<String> exts = mimetypeService.getExtensionsFromMimetypeName(mimeType);
             String ext = "";
-            if(exts.size() > 0) {
-                ext = exts.get(0);
+            if(!exts.isEmpty()) {
+                ext = exts.getFirst();
             }
             if(StringUtils.isBlank(fileName)) {
                 fileName = StringUtils.isBlank(provider) ? "nuxeo-generative-ai-" : provider + "-";
